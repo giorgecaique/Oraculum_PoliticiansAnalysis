@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+<html>
+    <head>
+        {% block head %}
+        <title>Partidos</title>
+        {% endblock %}
+    </head>
+    <body onload="get_data()">
+        {% block body %}
+        <div class="container">
+            <h1>Partidos</h1>
+        </div>
+       <div class="container">
+            <button onclick="get_data();"> click</button>
+        </div>
+        <script>
+            var settings = {
+            "async": true,
+            "crossDomain": true,
+            "url": "https://dadosabertos.camara.leg.br/api/v2/partidos?ordem=ASC&ordenarPor=sigla",
+            "method": "GET",
+            "headers": {
+                "accept": "application/json",
+                "cache-control": "no-cache",
+                "postman-token": "a3fead1e-2bb4-3661-e2da-fca633240aba"
+            }
+            }
+            function get_data(){
+                $.ajax({
+                    async: false,
+                    method: "GET",
+                    url: "https://dadosabertos.camara.leg.br/api/v2/partidos?itens=100&ordem=ASC&ordenarPor=sigla",
+                    headers: {
+                        accept:"application/json"
+                    },
+                    success: function(_data){
+                        data = _data;
+                    },
+                    error: function(data){
+                        console.log("Error")
+                        console.log(data)
+                    }
+                })
+            }
+        </script>
+        {% endblock %}
+    </body>
+</html>

@@ -1,0 +1,47 @@
+  <html> 
+    <head>  
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>  
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" 
+            integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" 
+            crossorigin="anonymous">
+      {% block head %}
+      <meta charset="utf-8">
+      <title>Base</title>
+      {% endblock %}
+    </head>
+    <body>
+      <div class="jumbotron" style="margin-bottom:0px; background-color:#4C4A48" > 
+        <div class="container">
+          <a href="/Oraculum_Data">
+            <div class="form-inline">
+              <img src="https://image.flaticon.com/icons/svg/167/167365.svg" style="width:50;height:50px;float:left;margin-right:30px">
+              <h2 style="color:white">Oraculum</h2>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div>
+         <nav class="navbar navbar-inverse">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                <a class="navbar-brand" href="/Oraculum_Data">Oraculum</a>
+                </div>
+                <ul class="nav navbar-nav">
+                <li class="active"><a href="/Oraculum_Data">Home</a></li>
+                <li><a href="/Oraculum_Data/saude">Piloto</a></li>
+                <li><a href="/Oraculum_Data/deputados">Deputados</a></li>
+                <li><a href="/Oraculum_Data/partidos">Partidos</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="/Oraculum_Data/login"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+                    <li><a href="/Oraculum_Data/login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                    <li><a href="/Oraculum_Data/login"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+                </ul>
+            </div>
+        </nav> 
+        {% block body %}
+         {% endblock %}
+      </div>
+    </body>
+  </html>
