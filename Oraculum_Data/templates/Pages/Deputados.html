@@ -5,44 +5,30 @@
         <title>Deputados</title>
         {% endblock %}
     </head>
-    <body onload="get_data()">
+    <body>
         {% block body %}
         <div class="container">
             <h1>Deputados</h1>
         </div>
        <div id="main_div" class="container">
-            <button onclick="get_data();"> click</button>
-        </div>
-        <div class="container">
-        </div>
+       </div>
         <script>
-            var settings = {
-            "async": true,
-            "crossDomain": true,
-            "url": "https://dadosabertos.camara.leg.br/api/v2/partidos?ordem=ASC&ordenarPor=sigla",
-            "method": "GET",
-            "headers": {
-                "accept": "application/json",
-                "cache-control": "no-cache",
-                "postman-token": "a3fead1e-2bb4-3661-e2da-fca633240aba"
-            }
-            }
-
             function populate(data){
                 for(var i = 0;i < data['dados'].length;i++){
                     var div = document.createElement("div");
                     div.id = data['dados'][i].id;
                     var a = document.createElement("a");
+                    a.href = "/Oraculum_Data/deputados/despesas/?"+data['dados'][i].id;
                     div.class = "container";
                     var img = document.createElement("img");
                     img.src = data['dados'][i].urlFoto;
-                    img.style = "float:left;";
                     var deputado_name = document.createElement("h3");
                     deputado_name.textContent = data['dados'][i].nome;
                     var deputado_uf = document.createElement("p");
-                    deputado_uf.textContent = data['dados'][i].siglaUf;
+                    deputado_uf.textContent = "Estado: " + data['dados'][i].siglaUf;
                     var deputado_partido = document.createElement("p");
-                    deputado_partido.textContent = data['dados'][i].siglaPartido;
+                    deputado_partido.textContent = "Partido: " + data['dados'][i].siglaPartido;
+                    var hr = document.createElement("hr");
                     a.appendChild(img);
                     a.appendChild(deputado_name);
                     a.appendChild(deputado_partido);
@@ -50,10 +36,11 @@
                     div.appendChild(a);
                     var main_div = document.getElementById("main_div");
                     main_div.appendChild(div);
+                    main_div.append(hr);
                 }
             }
 
-            function get_data(){
+            window.onload = function(){
                 $.ajax({
                     async: false,
                     method: "GET",

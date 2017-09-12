@@ -12,4 +12,5 @@ urlpatterns = [
     url(r'^api/chart/data/$', views.CancerColo.as_view()),
     url(r'^api/deputados/$', views.Deputados.as_view()),
     url(r'^api/login/$', views.Users.as_view()),
+    url(r'^deputados/despesas/$', views.despesas),
 ]

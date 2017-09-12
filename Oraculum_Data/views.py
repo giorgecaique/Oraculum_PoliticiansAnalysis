@@ -31,6 +31,12 @@ def deputados(request):
         return login(request)
     return render(request, 'Pages/Deputados.html')
 
+def despesas(request):
+    global user
+    if user is None:
+        return login(request)
+    return render(request, 'Pages/Despesas.html')
+
 def partidos(request):
     global user
     if user is None:
