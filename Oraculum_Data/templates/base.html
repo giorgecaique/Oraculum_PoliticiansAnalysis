@@ -34,12 +34,18 @@
                 <li><a href="/Oraculum_Data/partidos">Partidos</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="/Oraculum_Data/login"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-                    <li><a href="/Oraculum_Data/login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-                    <li><a href="/Oraculum_Data/login"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+                    <li id="signup"><a href="/Oraculum_Data/signup"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+                    <li id="login"><a href="/Oraculum_Data/login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                    <li id="logout" type="hidden"><a type="hidden" href="/Oraculum_Data/login"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
                 </ul>
             </div>
         </nav> 
+        <script>
+          var signup = document.getElementById("signup");
+          var login = document.getElementById("login");
+          var logout = document.getElementById("logout");
+
+        </script>
         {% block body %}
          {% endblock %}
       </div>

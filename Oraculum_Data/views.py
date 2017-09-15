@@ -1,13 +1,14 @@
 from django.http import JsonResponse
-from django.contrib.auth import authenticate
-from django.shortcuts import render, HttpResponse
+from django.contrib.auth import login as l, authenticate
+from django.contrib.auth.models import User
+from django.shortcuts import render, HttpResponse, redirect
+from django.contrib.auth.forms import UserCreationForm
 import requests
 import json
 import pandas as pd
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
-
 user = None
 
 def home(request):
@@ -18,6 +19,20 @@ def home(request):
 
 def login(request):
     return render(request, 'Pages/login.html')
+
+def signup(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            raw_password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=raw_password)
+            l(request, user)
+            return redirect('/Oraculum_Data/')
+    else:
+        form = UserCreationForm()
+    return render(request, 'Pages/Signup.html', {'form': form})
 
 def saude(request):
     global user
@@ -31,11 +46,33 @@ def deputados(request):
         return login(request)
     return render(request, 'Pages/Deputados.html')
 
-def despesas(request):
+def deputado_dados(request, deputado = None):
     global user
     if user is None:
         return login(request)
-    return render(request, 'Pages/Despesas.html')
+    
+    if deputado is None:
+        return render(request, 'Pages/Despesas.html')
+
+    url = "https://dadosabertos.camara.leg.br/api/v2/deputados/" + deputado + "/despesas?itens=100&ordem=DESC&ordenarPor=numAno"
+   
+    querystring = {"ordem":"DESC","ordenarPor":"numAno"}
+
+    headers = {
+        'accept': "application/json"
+    }
+
+    json_response = requests.request("GET", url, headers=headers, params=querystring)
+    response = json_response.json()
+
+    df = pd.DataFrame(response['dados'])
+
+
+    total = df['valorLiquido'].astype(float).sum()
+
+    args = {'dataframe': df.to_html(classes="table table-striped"), 'total': "R$ " + total}
+
+    return render(request, 'Pages/Despesas.html', args)
 
 def partidos(request):
     global user
@@ -49,6 +86,15 @@ def cancerColo(request):
         return login(request)
     return render(request, 'Pages/CancerColo.html')
 
+"""def register(request):
+    if request.method == 'POST':
+        form = RegistrationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('/Oraculum_Data')"""
+
+# API
+
 class CancerColo(APIView):
     def get(self, request, format=None):
         try:
@@ -59,14 +105,30 @@ class CancerColo(APIView):
             data = {'labels':df.Ano, 'dataframe' : df[request.query_params['dataset']], 'total' : df[request.query_params['dataset']].sum(), 'mean': round(df[request.query_params['dataset']].mean(), 2), 'std': round(df[request.query_params['dataset']].std(), 2), 'count': df[request.query_params['dataset']].count() }
             return Response(data)
         except Exception as ex:
-            return Response(data)
+            return Response({'ERROR': ex})
 
 class Users(APIView):
     def get(self, request, format=None):
-        global user
-        user = authenticate(username=request.query_params['user'], password=request.query_params['secret'])
-        result = {'result':user is not None}
-        return Response(result)
+        try:
+            global user
+            user = authenticate(username=request.query_params['user'], password=request.query_params['secret'])
+            result = {'result':user is not None}
+            return Response(result)
+        except Exception as ex:
+            return Response({'result': ex})
+
+    """def post(self, request, format=None):
+        try:
+            global user
+            form = UserCreationForm(request.POST)
+            if form.is_valid():
+                form.save()
+            username = form.cleaned_data.get('username')
+            raw_password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=raw_password)
+            return redirect('/Oraculum_Data/')
+        except Exception as ex:
+            return Response({'result': ex})"""
 
 class Deputados(APIView):
     def get(self, request, format=None):
@@ -82,3 +144,7 @@ class Deputados(APIView):
 
         response = requests.request("GET", url, headers=headers, params=querystring)
         return Response(response)
+
+class Despesas(APIView):
+    def get(self, request, format=None):
+        pass

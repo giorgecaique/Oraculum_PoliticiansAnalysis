@@ -8,7 +8,29 @@
     </head>
     <body>
         {% block body %}
-        
+
+        <div class="container"style="overflow-x:scroll;overflow:scroll;width:90%;height:80%;">
+            <h3>Dados</h3>
+            <label>Nome: {{ total }}</label>
+            <label>Nome Eleitoral: {{ nomeEleitoral }}</label>
+            <label>CPF: {{ cpf }}</label>
+            <label>Data Nascimento: {{ dataNascimento }}</label>
+            <label>Data Falecimento: {{ dataFalecimento }}</label>
+            <label>Escolaridade: {{ escolaridade }}</label>
+            <label>Município Nascimento: {{ municipioNascimento }}</label>
+            <label>Nome Civil: {{ nomeCivil }}</label>
+            <label>Sexo: {{ sexo }}</label>
+            <label>UF Nascimento: {{ ufNacimento }}</label>
+            <label>Sigla Partido: {{ siglaPartido }}</label>
+            <label>Sigla UF: {{ siglaUF }}</label>
+            <label>Situação: {{ situacao }}</label>
+            <!-- <a href= {{ uriWebSite }}>WebSite</a> -->
+            <h3>Despesas</h3>
+            {{ dataframe | safe }}
+        </div>
+        <script>
+            
+        </script>
         {% endblock %}
     </body>
 </html>
