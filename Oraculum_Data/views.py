@@ -3,8 +3,7 @@ from django.contrib.auth import login as l, authenticate
 from django.contrib.auth.models import User
 from django.shortcuts import render, HttpResponse, redirect
 from django.contrib.auth.forms import UserCreationForm
-import requests
-import json
+import requests, json
 import pandas as pd
 
 from rest_framework.views import APIView
@@ -65,12 +64,11 @@ def deputado_dados(request, deputado = None):
     json_response = requests.request("GET", url, headers=headers, params=querystring)
     response = json_response.json()
 
-    df = pd.DataFrame(response['dados'])
+    df_despesas = pd.DataFrame(response['dados'])
 
+    total = df_despesas['valorLiquido'].astype(float).sum()
 
-    total = df['valorLiquido'].astype(float).sum()
-
-    args = {'dataframe': df.to_html(classes="table table-striped"), 'total': "R$ " + total}
+    args = {'dataframe': df_despesas.to_html(classes="table table-striped"), 'valor' : df_despesas['valorLiquido'].astype(float).tolist(), 'data_documento' : json.dumps(df_despesas['dataDocumento'].astype(str).tolist()), 'total': "R$ " + str(total), 'deputado' : deputado}
 
     return render(request, 'Pages/Despesas.html', args)
 
@@ -85,13 +83,6 @@ def cancerColo(request):
     if user is None:
         return login(request)
     return render(request, 'Pages/CancerColo.html')
-
-"""def register(request):
-    if request.method == 'POST':
-        form = RegistrationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('/Oraculum_Data')"""
 
 # API
 
@@ -116,19 +107,6 @@ class Users(APIView):
             return Response(result)
         except Exception as ex:
             return Response({'result': ex})
-
-    """def post(self, request, format=None):
-        try:
-            global user
-            form = UserCreationForm(request.POST)
-            if form.is_valid():
-                form.save()
-            username = form.cleaned_data.get('username')
-            raw_password = form.cleaned_data.get('password1')
-            user = authenticate(username=username, password=raw_password)
-            return redirect('/Oraculum_Data/')
-        except Exception as ex:
-            return Response({'result': ex})"""
 
 class Deputados(APIView):
     def get(self, request, format=None):
