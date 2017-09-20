@@ -11,6 +11,7 @@
       {% endblock %}
     </head>
     <body>
+        {% csrf_token %}
       <div class="jumbotron" style="margin-bottom:0px; background-color:#4C4A48" > 
         <div class="container">
           <a href="/Oraculum_Data">
@@ -29,21 +30,42 @@
                 </div>
                 <ul class="nav navbar-nav">
                 <li class="active"><a href="/Oraculum_Data">Home</a></li>
-                <li><a href="/Oraculum_Data/saude">Piloto</a></li>
                 <li><a href="/Oraculum_Data/deputados">Deputados</a></li>
                 <li><a href="/Oraculum_Data/partidos">Partidos</a></li>
                 </ul>
-                <ul class="nav navbar-nav navbar-right">
+                <ul id="user_operations"  class="nav navbar-nav navbar-right">
+                    {% if user.is_authenticated %}
+                    <li id="logout" hidden="hidden"><a href="/Oraculum_Data/logout"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+                    <li id="alteruser"><a href="/Oraculum_Data/alteruser"><span class="glyphicon glyphicon-log-in"></span> Alterar usuário</a></li>
+                    {% else %}
                     <li id="signup"><a href="/Oraculum_Data/signup"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
                     <li id="login"><a href="/Oraculum_Data/login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-                    <li id="logout" type="hidden"><a type="hidden" href="/Oraculum_Data/login"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+                    {% endif %}                
                 </ul>
             </div>
         </nav> 
         <script>
-          var signup = document.getElementById("signup");
-          var login = document.getElementById("login");
-          var logout = document.getElementById("logout");
+          // var user_authenticated = {% if request.user.is_authenticated %} true {% else %} false {% endif %};
+
+          // if(user_authenticated == true){
+          //   var signup = document.getElementById("signup");
+          //   var login = document.getElementById("login");
+          //   var alter_user = document.createElement("li");
+          //   var user_operations = document.getElementById("user_operations");
+          //   var a = document.createElement("a");
+          //   var span = document.createElement("span");
+          //   span.class = "glyphicon glyphicon-log-out";
+          //   a.href = "/Oraculum_Data/alteruser/";
+          //   alter_user.appendChild(a);
+          //   alter_user.appendChild(span);
+          //   user_operations.appendChild(alter_user);
+          //   signup.style.display = "none";
+          //   login.style.display = "none";
+          // }
+          // else{
+          //   var logout = document.getElementById("logout");
+          //   logout.style.display = "none";
+          // }
 
         </script>
         {% block body %}

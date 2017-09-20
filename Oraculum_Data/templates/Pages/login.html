@@ -23,7 +23,8 @@
                             window.location.href = '/Oraculum_Data/';
                         }
                         else{
-                            console.log("didn't work")
+                            var error_label = document.getElementById("error_label");
+                            error_label.style.display = "block";
                         }
                     },
                     error: function(data){
@@ -34,7 +35,9 @@
             }
         </script>
         <div style="position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);">
-            <img src="https://image.flaticon.com/icons/svg/89/89285.svg" style="display:block;width:100px;height:100px;margin:auto;margin-bottom:30px"/>
+            <a href="/Oraculum_Data">
+                <img src="https://image.flaticon.com/icons/svg/89/89285.svg" style="display:block;width:100px;height:100px;margin:auto;margin-bottom:30px"/>
+            </a>
             <div>
             <input id="usr" class="default" placeholder="usuário" style="margin-bottom:20px" />
             </div>
@@ -44,6 +47,7 @@
             <div>
             <button type="submit" onclick="get();" class="btn btn-primary" style="display:block;margin:auto;">login</button>
             <a align="center" href="/Oraculum_Data/signup/" style="display:block;margin:auto;margin-top:7%;">Registrar</a>
+            <label id="error_label" align="center" style="display:none;color:red">Falha ao efetuar login</label>    
             </div>
         </div>
     </body>

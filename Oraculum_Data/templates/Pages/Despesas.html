@@ -1,99 +1,96 @@
 {% extends 'base.html' %}
 
-<html>
-    <head>
-        {% block head %}
-        <title>Despesas</title>
-        {% endblock %}
-    </head>
-    <body>
-        {% block body %}
+{% block head %}
+<title>Despesas</title>
+{% endblock %}
 
-        <div class="container">
-            <h3>Dados</h3>
-            <img id="img_deputado" style="margin-bottom:3%;margin-top:3%;float:right"/>
-            <p id="nome"></p>
-            <p id="nome_eleitoral" ></p>
-            <p id="data_nascimento"></p>
-            <p id="data_falecimento"></p>
-            <p id="escolaridade"></p>
-            <p id="municipio_nascimento"></p>
-            <p id="nome_civil"></p>
-            <p id="sexo"></p>
-            <p id="uf_nascimento"></p>
-            <p id="sigla_partido"></p>
-            <p id="sigla_uf"></p>
-            <p id="situacao"></p>
-            <p id="condicao_eleitoral"></p>
-            <p id="email"></p>
-            <!-- <a href= {{ uriWebSite }}>WebSite</a> -->
-            <h3>Despesas</h3>
-            <canvas id="myChart" style="margin-bottom:10%"></canvas>
-        </div>
-        <script>
-            var deputado = {{ deputado }}
-            
-            var x = {{ data_documento|safe }}
-            var y = {{ valor }}
-            var ctx = document.getElementById("myChart");
+{% block body %}
 
-            var img_deputado = document.getElementById("img_deputado");
-            var nome = document.getElementById("nome");
-            var data_nascimento = document.getElementById("data_nascimento");
-            var escolaridade = document.getElementById("escolaridade");
-            var municipio_nascimento = document.getElementById("municipio_nascimento");
-            var sexo = document.getElementById("sexo");
-            var uf_nascimento = document.getElementById("uf_nascimento");
-            var sigla_partido = document.getElementById("sigla_partido");
-            var sigla_uf = document.getElementById("sigla_uf");
-            var situacao = document.getElementById("situacao");
-            var condicao_eleitoral = document.getElementById("condicao_eleitoral");
-            var email = document.getElementById("email");
+<div class="container">
+    <h3>Dados</h3>
+    <img id="img_deputado" style="margin-bottom:3%;margin-top:3%;float:right"/>
+    <p id="nome"></p>
+    <p id="nome_eleitoral" ></p>
+    <p id="data_nascimento"></p>
+    <p id="data_falecimento"></p>
+    <p id="escolaridade"></p>
+    <p id="municipio_nascimento"></p>
+    <p id="nome_civil"></p>
+    <p id="sexo"></p>
+    <p id="uf_nascimento"></p>
+    <p id="sigla_partido"></p>
+    <p id="sigla_uf"></p>
+    <p id="situacao"></p>
+    <p id="condicao_eleitoral"></p>
+    <p id="email"></p>
+    <!-- <a id="site"></a> -->
+    <h3>Despesas</h3>
+    <canvas id="myChart" style="margin-bottom:10%"></canvas>
+</div>
+<script>
+    var deputado = {{ deputado }}
+    
+    var x = {{ data_documento|safe }}
+    var y = {{ valor }}
+    var ctx = document.getElementById("myChart");
 
-            var chart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: x,
-                        datasets: [{
-                            label: 'Despesa ao longo do tempo',
-                            data: y,
-                            backgroundColor:'rgba(0, 0, 0, 0.2)',
-                            borderColor:'rgba(50, 50, 50, 1)'
-                        }]
-                    }
-                });
+    var img_deputado = document.getElementById("img_deputado");
+    var nome = document.getElementById("nome");
+    var data_nascimento = document.getElementById("data_nascimento");
+    var escolaridade = document.getElementById("escolaridade");
+    var municipio_nascimento = document.getElementById("municipio_nascimento");
+    var sexo = document.getElementById("sexo");
+    var uf_nascimento = document.getElementById("uf_nascimento");
+    var sigla_partido = document.getElementById("sigla_partido");
+    var sigla_uf = document.getElementById("sigla_uf");
+    var situacao = document.getElementById("situacao");
+    var condicao_eleitoral = document.getElementById("condicao_eleitoral");
+    var email = document.getElementById("email");
+    // var site = document.getElementById("site");
 
-            window.onload = function(){
-                $.ajax({
-                    async: false,
-                    method: "GET",
-                    url: "https://dadosabertos.camara.leg.br/api/v2/deputados/" + deputado,
-                    headers: {
-                        accept:"application/json"
-                    },
-                    success: function(_data){
-                        var data = _data;
-                        img_deputado.src = data['dados']['ultimoStatus']['urlFoto'];
-                        nome.textContent = "Nome: " + data['dados']['nomeCivil'];
-                        data_nascimento.textContent = "Data nascimento: " + data['dados']['dataNascimento'];
-                        escolaridade.textContent = "Escolaridade: " + data['dados']['escolaridade'];
-                        municipio_nascimento.textContent = "Município: " + data['dados']['municipioNascimento'];
-                        sexo.textContent = "Sexo: " + data['dados']['sexo'];
-                        uf_nascimento.textContent = "UF nascimento: " + data['dados']['ufNascimento'];
-                        sigla_partido.textContent = "Partido: " + data['dados']['ultimoStatus']['siglaPartido'];
-                        situacao.textContent = "Situação: " + data['dados']['ultimoStatus']['situacao'];
-                        condicao_eleitoral.textContent = "Condição eleitoral: " + data['dados']['ultimoStatus']['condicaoEleitoral'];
-                        email.textContent = "Email: " + data['dados']['ultimoStatus']['gabinete']['email'];
-
-                        
-                    },
-                    error: function(data){
-                        console.log("Error")
-                        console.log(data)
-                    }
-                })
+    var chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: x,
+                datasets: [{
+                    label: 'Despesa ao longo do tempo',
+                    data: y,
+                    backgroundColor:'rgba(0, 0, 0, 0.2)',
+                    borderColor:'rgba(50, 50, 50, 1)'
+                }]
             }
-        </script>
-        {% endblock %}
-    </body>
-</html>
+        });
+
+    window.onload = function(){
+        $.ajax({
+            async: false,
+            method: "GET",
+            url: "https://dadosabertos.camara.leg.br/api/v2/deputados/" + deputado,
+            headers: {
+                accept:"application/json"
+            },
+            success: function(_data){
+                var data = _data;
+                img_deputado.src = data['dados']['ultimoStatus']['urlFoto'];
+                nome.textContent = "Nome: " + data['dados']['nomeCivil'];
+                data_nascimento.textContent = "Data nascimento: " + data['dados']['dataNascimento'];
+                escolaridade.textContent = "Escolaridade: " + data['dados']['escolaridade'];
+                municipio_nascimento.textContent = "Município: " + data['dados']['municipioNascimento'];
+                sexo.textContent = "Sexo: " + data['dados']['sexo'];
+                uf_nascimento.textContent = "UF nascimento: " + data['dados']['ufNascimento'];
+                sigla_partido.textContent = "Partido: " + data['dados']['ultimoStatus']['siglaPartido'];
+                situacao.textContent = "Situação: " + data['dados']['ultimoStatus']['situacao'];
+                condicao_eleitoral.textContent = "Condição eleitoral: " + data['dados']['ultimoStatus']['condicaoEleitoral'];
+                email.textContent = "Email: " + data['dados']['ultimoStatus']['gabinete']['email'];
+                site.href = data['dados']['urlWebsite'];
+                // site.textContent = "Site do deputado";
+                
+            },
+            error: function(data){
+                console.log("Error")
+                console.log(data)
+            }
+        })
+    }
+</script>
+{% endblock %}

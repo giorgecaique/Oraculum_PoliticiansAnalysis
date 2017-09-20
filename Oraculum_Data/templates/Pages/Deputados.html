@@ -1,70 +1,66 @@
 {% extends 'base.html' %}
-<html>
-    <head>
-        {% block head %}
-        <title>Deputados</title>
-        {% endblock %}
-    </head>
-    <body>
-        {% block body %}
-        <div class="container">
-            <h1>Deputados</h1>
-        </div>
-       <div id="main_div" class="container">
-       </div>
-        <script>
-            function populate(data){
-                for(var i = 0;i < data['dados'].length;i++){
-                    var div = document.createElement("div");
-                    div.id = data['dados'][i].id;
-                    div.class = "container";
-                    var img = document.createElement("img");
-                    img.src = data['dados'][i].urlFoto;
-                    img.style = "float:left; margin-right:5%";
-                    var deputado_name = document.createElement("h3");
-                    deputado_name.textContent = data['dados'][i].nome;
-                    var deputado_uf = document.createElement("p");
-                    deputado_uf.textContent = "Estado: " + data['dados'][i].siglaUf;
-                    var deputado_partido = document.createElement("p");
-                    deputado_partido.textContent = "Partido: " + data['dados'][i].siglaPartido;
-                    var a = document.createElement("a");
-                    var see_data = document.createElement("button");
-                    see_data.textContent = "Ver dados";
-                    see_data.setAttribute("class", "btn btn-primary");
-                    a.href = "/Oraculum_Data/deputados/dados/"+data['dados'][i].id;
-                    var hr = document.createElement("hr");
-                    a.appendChild(see_data);
-                    div.appendChild(img);
-                    div.appendChild(deputado_name);
-                    div.appendChild(deputado_partido);
-                    div.appendChild(deputado_uf);
-                    div.appendChild(a);
-                    var main_div = document.getElementById("main_div");
-                    main_div.appendChild(div);
-                    main_div.append(hr);
-                }
-            }
 
-            window.onload = function(){
-                $.ajax({
-                    async: false,
-                    method: "GET",
-                    url: "https://dadosabertos.camara.leg.br/api/v2/deputados?itens=100&ordem=ASC&ordenarPor=nome",
-                    headers: {
-                        accept:"application/json"
-                    },
-                    success: function(_data){
-                        var data = _data;
-                        populate(data);
-                    },
-                    error: function(data){
-                        console.log("Error")
-                        console.log(data)
-                    }
-                })
-            }
+{% block head %}
+<title>Deputados</title>
+{% endblock %}
 
-        </script>
-        {% endblock %}
-    </body>
-</html>
+{% block body %}
+<div class="container">
+    <h1>Deputados</h1>
+</div>
+<div id="main_div" class="container">
+</div>
+<script>
+    function populate(data){
+        for(var i = 0;i < data['dados'].length;i++){
+            var div = document.createElement("div");
+            div.id = data['dados'][i].id;
+            div.class = "container";
+            var img = document.createElement("img");
+            img.src = data['dados'][i].urlFoto;
+            img.style = "float:left; margin-right:5%";
+            var deputado_name = document.createElement("h3");
+            deputado_name.textContent = data['dados'][i].nome;
+            var deputado_uf = document.createElement("p");
+            deputado_uf.textContent = "Estado: " + data['dados'][i].siglaUf;
+            var deputado_partido = document.createElement("p");
+            deputado_partido.textContent = "Partido: " + data['dados'][i].siglaPartido;
+            var a = document.createElement("a");
+            var see_data = document.createElement("button");
+            see_data.textContent = "Ver dados";
+            see_data.setAttribute("class", "btn btn-primary");
+            a.href = "/Oraculum_Data/deputados/dados/"+data['dados'][i].id;
+            var hr = document.createElement("hr");
+            a.appendChild(see_data);
+            div.appendChild(img);
+            div.appendChild(deputado_name);
+            div.appendChild(deputado_partido);
+            div.appendChild(deputado_uf);
+            div.appendChild(a);
+            var main_div = document.getElementById("main_div");
+            main_div.appendChild(div);
+            main_div.append(hr);
+        }
+    }
+
+    window.onload = function(){
+        $.ajax({
+            async: false,
+            method: "GET",
+            url: "https://dadosabertos.camara.leg.br/api/v2/deputados?itens=100&ordem=ASC&ordenarPor=nome",
+            headers: {
+                accept:"application/json"
+            },
+            success: function(_data){
+                var data = _data;
+                populate(data);
+            },
+            error: function(data){
+                console.log("Error")
+                console.log(data)
+            }
+        })
+    }
+
+</script>
+{% endblock %}
