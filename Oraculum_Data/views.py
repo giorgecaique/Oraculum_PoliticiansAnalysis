@@ -14,8 +14,8 @@ user = None
 
 def home(request):
     global user
-    #if user is None:
-    #    return login(request)
+    if user is None:
+        return login(request)
     users = User.objects.all()
     args = {'user' : user, 'users' : users}
     return render(request, 'Pages/HomePage.html', args)
