@@ -18,7 +18,7 @@ def home(request):
         return login(request)
     users = User.objects.all()
     args = {'user' : user, 'users' : users}
-    return render(request, 'Pages/HomePage.html', args)
+    return render(request, 'Pages/index.html', args)
 
 def login(request):
     return render(request, 'Pages/login.html')
