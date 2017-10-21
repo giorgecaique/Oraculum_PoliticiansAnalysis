@@ -130,7 +130,7 @@ def api_getdeputados(request):
 
     if request.method == 'GET':
         try:
-            df = pd.read_excel("//Users//giorgecaique//Documents//TI//Data//deputados.xlsx")
+            df = pd.read_excel("Oraculum_Data/deputados.xlsx")
             df['CPF'] = df['CPF'].astype(str)
             df['DEPUTADOS_ID'] = df['DEPUTADOS_ID'].astype(str)
             df['SITE'] = df['SITE'].astype(str)
@@ -149,7 +149,7 @@ def api_getpartidos(request):
 
     if request.method == 'GET':
         try:
-            df = pd.read_excel("//Users//giorgecaique//Documents//TI//Data//partidos.xlsx")
+            df = pd.read_excel('Oraculum_Data/partidos.xlsx')
             partido = request.GET.get('partido', None)
             if partido is not None:
                 df = df[df['PARTIDO_SIGLA'].astype(str) == str(partido)]
@@ -166,7 +166,7 @@ def api_getpartidos(request):
             result = {'dados' : df.T.to_dict().values()}
             return Response(result)
         except Exception as ex:
-            return Response({'result' : ex.args[0]})
+            return Response({'result' : str(ex.args[0]) + " - " + ex.args[1]})
 
 @api_view(['GET'])
 def api_alteruser(request):
