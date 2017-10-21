@@ -51,12 +51,19 @@ def signup(request):
         form = UserCreationForm()
     return render(request, 'Pages/Signup.html', {'form': form})
 
-def deputados(request):
+def deputados_relatorio(request):
     global user
     if user is None:
         return login(request)
     args = {'user' : user}
-    return render(request, 'Pages/Deputados.html', args)
+    return render(request, 'Pages/Deputados_Relatorio.html', args)
+
+def deputados_lista(request):
+    global user
+    if user is None:
+        return login(request)
+    args = {'user' : user}
+    return render(request, 'Pages/Deputados_Lista.html', args)
 
 def deputado_dados(request, deputado = None):
     global user
@@ -64,7 +71,7 @@ def deputado_dados(request, deputado = None):
         return login(request)
     
     if deputado is None:
-        return render(request, 'Pages/Despesas.html')
+        return render(request, 'Pages/DadosDeputados.html')
 
     url = "https://dadosabertos.camara.leg.br/api/v2/deputados/" + deputado + "/despesas?itens=100&ordem=DESC&ordenarPor=numAno"
    
@@ -81,17 +88,85 @@ def deputado_dados(request, deputado = None):
 
     total = df_despesas['valorLiquido'].astype(float).sum()
 
-    args = {'dataframe': df_despesas.to_html(classes="table table-striped"), 'valor' : df_despesas['valorLiquido'].astype(float).tolist(), 'data_documento' : json.dumps(df_despesas['dataDocumento'].astype(str).tolist()), 'total': "R$ " + str(total), 'deputado' : deputado, 'user' : user}
+    args = {'user' : user}
 
-    return render(request, 'Pages/Despesas.html', args)
+    return render(request, 'Pages/DadosDeputados.html', args)
 
-def partidos(request):
+def partido_dados(request, partido = None):
     global user
     if user is None:
         return login(request)
-    return render(request, 'Pages/Partidos.html')
+    
+    if partido is None:
+        return render(request, 'Pages/DadosPartidos.html')
+
+    args = {'partido' : partido, 'user' : user}
+
+    return render(request, 'Pages/DadosPartidos.html', args)
+
+def partidos_relatorio(request):
+    global user
+    if user is None:
+        return login(request)
+
+    args = {'user' : user}
+    return render(request, 'Pages/Partidos_Relatorio.html', args)
+
+def partidos_lista(request):
+    global user
+    if user is None:
+        return login(request)
+
+    args = {'user' : user}
+    return render(request, 'Pages/Partidos_Lista.html', args)
 
 # API
+
+@api_view(['GET'])
+def api_getdeputados(request):
+    global user
+    if user is None:
+        return login(request)
+
+    if request.method == 'GET':
+        try:
+            df = pd.read_excel("//Users//giorgecaique//Documents//TI//Data//deputados.xlsx")
+            df['CPF'] = df['CPF'].astype(str)
+            df['DEPUTADOS_ID'] = df['DEPUTADOS_ID'].astype(str)
+            df['SITE'] = df['SITE'].astype(str)
+            df['ESCOLARIDADE'] = df['ESCOLARIDADE'].astype(str)
+            df['UF_NASCIMENTO'] = df['UF_NASCIMENTO'].astype(str)
+            result = {'dados' : df.T.to_dict().values()}
+            return Response(result)
+        except Exception as ex:
+            return Response({'result' : ex.args[0]})
+
+@api_view(['GET'])
+def api_getpartidos(request):
+    global user
+    if user is None:
+        return login(request)
+
+    if request.method == 'GET':
+        try:
+            df = pd.read_excel("//Users//giorgecaique//Documents//TI//Data//partidos.xlsx")
+            partido = request.GET.get('partido', None)
+            if partido is not None:
+                df = df[df['PARTIDO_SIGLA'].astype(str) == str(partido)]
+            df['PARTIDO_ID'] = df['PARTIDO_ID'].astype(str)
+            df['PARTIDO_NUMERO_ELEITORAL'] = df['PARTIDO_NUMERO_ELEITORAL'].astype(str)
+            df['PARTIDO_SIGLA'] = df['PARTIDO_SIGLA'].astype(str)
+            df['PARTIDO_TOTAL_MEMBROS'] = df['PARTIDO_TOTAL_MEMBROS'].astype(str)
+            df['PARTIDO_TOTAL_POSSE'] = df['PARTIDO_TOTAL_POSSE'].astype(str)
+            df['PARTIDO_URL_FACEBOOK'] = df['PARTIDO_URL_FACEBOOK'].astype(str)
+            df['PARTIDO_URL_SITE'] = df['PARTIDO_URL_SITE'].astype(str)
+            df['PARTIDO_URL_FOTO_LIDER'] = df['PARTIDO_URL_FOTO_LIDER'].astype(str)
+            df['PARTIDO_NOME_LIDER'] = df['PARTIDO_NOME_LIDER'].astype(str)
+            df['PARTIDO_UF_LIDER'] = df['PARTIDO_UF_LIDER'].astype(str)
+            result = {'dados' : df.T.to_dict().values()}
+            return Response(result)
+        except Exception as ex:
+            return Response({'result' : ex.args[0]})
 
 @api_view(['GET'])
 def api_alteruser(request):
@@ -101,12 +176,20 @@ def api_alteruser(request):
         if user is not None:
             try:
                 user.username = request.query_params['user']
+                password = request.query_params['secret']
+                if len(password) < 8:
+                    raise Exception('Senha muito pequena')
+                float(password) # check if the password is tottaly numeric
+    
+                result = {'result': "Senha não pode conter só números"}
+                return Response(result)
+            except ValueError as ex:
                 user.set_password(request.query_params['secret'])
                 user.save()
                 result = {'result': True}
                 return Response(result)
             except Exception as ex:
-                return Response({'result': ex})
+                return Response({'result': ex.args[0]})
 
 @api_view(['GET'])
 def api_deleteuser(request):
@@ -120,35 +203,15 @@ def api_deleteuser(request):
                 result = {'result': True}
                 return Response(result)
             except Exception as ex:
-                return Response({'result': ex})            
+                return Response({'result': ex.args[0]})            
 
-class Users(APIView):
-    def get(self, request, format=None):
-        try:
-            global user
+@api_view(['GET'])
+def api_login(request):
+    try:
+        global user
 
-            user = authenticate(username=request.query_params['user'], password=request.query_params['secret'])
-            result = {'result':user is not None}
-            return Response(result)
-        except Exception as ex:
-            return Response({'result': ex})
-
-
-class Deputados(APIView):
-    def get(self, request, format=None):
-        url = "https://dadosabertos.camara.leg.br/api/v2/partidos"
-
-        querystring = {"ordem":"ASC","ordenarPor":"sigla"}
-
-        headers = {
-            'accept': "application/json",
-            'cache-control': "no-cache",
-            'postman-token': "70af4e86-7056-65bf-f443-804378a0aa72"
-            }
-
-        response = requests.request("GET", url, headers=headers, params=querystring)
-        return Response(response)
-
-class Despesas(APIView):
-    def get(self, request, format=None):
-        pass
+        user = authenticate(username=request.query_params['user'], password=request.query_params['secret'])
+        result = {'result':user is not None}
+        return Response(result)
+    except Exception as ex:
+        return Response({'result': ex.args[0]})

@@ -8,6 +8,7 @@
 
 <div class="container">
     <h3>Dados</h3>
+    <h3 id="error_h3" align="center" style="display:none;color:#F0BCBC">Falha ao consultar os dados  </h3>
     <img id="img_deputado" style="margin-bottom:3%;margin-top:3%;float:right"/>
     <p id="nome"></p>
     <p id="nome_eleitoral" ></p>
@@ -87,8 +88,8 @@
                 
             },
             error: function(data){
-                console.log("Error")
-                console.log(data)
+                var error_h3 = document.getElementById("error_h3");
+                error_h3.style.display = "block";
             }
         })
     }

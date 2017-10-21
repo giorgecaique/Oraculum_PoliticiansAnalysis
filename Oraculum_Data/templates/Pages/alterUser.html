@@ -23,7 +23,9 @@
                                 window.location.href = '/Oraculum_Data/';
                             }
                             else{
-                                console.log("didn't work")
+                                var error_label = document.getElementById("error_label");
+                                error_label.textContent = result['result'];
+                                error_label.style.display = "block";
                             }
                         },
                         error: function(data){
@@ -47,7 +49,8 @@
                                 window.location.href = '/Oraculum_Data/';
                             }
                             else{
-                                console.log("didn't work")
+                                var error_label = document.getElementById("error_label");
+                                error_label.style.display = "block";
                             }
                         },
                         error: function(data){
@@ -72,8 +75,8 @@
                     <div style="display:block;margin:auto;">
                         <button type="submit" onclick="alter();" class="btn btn-primary" >Alterar</button>
                         <button type="submit" onclick="del();" class="btn btn-danger">Excluir</button>
-
                     </div>
+                    <label id="error_label" align="center" style="display:none;color:red"></label>    
                 </div>
             </div>
         </body>

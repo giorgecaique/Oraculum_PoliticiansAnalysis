@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Deputados</title>
+{% endblock %}
+
+{% block body %}
+
+<div id="main_div" class="container">
+    <h1>Deputados</h1>        
+    <h3 id="error_h3" align="center" style="display:none;color:#F0BCBC">Falha ao consultar os dados  </h3>
+</div>
+<script>
+    function populate(data){
+        for(var i = 0;i < data['dados'].length;i++){
+            var div = document.createElement("div");
+            div.id = data['dados'][i].id;
+            div.class = "container";
+            var img = document.createElement("img");
+            img.src = data['dados'][i].IMG_DEPUTADO;
+            img.style = "float:left; margin-right:5%";
+            var deputado_name = document.createElement("h3");
+            deputado_name.textContent = data['dados'][i].NOME;
+            var deputado_uf = document.createElement("p");
+            deputado_uf.textContent = "Estado: " + data['dados'][i].SIGLA_UF;
+            var deputado_partido = document.createElement("p");
+            deputado_partido.textContent = "Partido: " + data['dados'][i].SIGLA_PARTIDO;
+            var a = document.createElement("a");
+            var see_data = document.createElement("button");
+            see_data.textContent = "Ver dados";
+            see_data.setAttribute("class", "btn btn-primary");
+            a.href = "/Oraculum_Data/deputados/dados/"+data['dados'][i].DEPUTADOS_ID;
+            var hr = document.createElement("hr");
+            a.appendChild(see_data);
+            div.appendChild(img);
+            div.appendChild(deputado_name);
+            div.appendChild(deputado_partido);
+            div.appendChild(deputado_uf);
+            div.appendChild(a);
+            var main_div = document.getElementById("main_div");
+            main_div.appendChild(div);
+            main_div.append(hr);
+        }
+    }
+
+    window.onload = function(){
+        $.ajax({
+            async: false,
+            method: "GET",
+            url: "http://127.0.0.1:8000/Oraculum_Data/api/getdeputados/",
+            dataType : 'json',
+            success: function(_data){
+                var data = _data;
+                populate(data);
+            },
+            error: function(_data, req, error){
+                console.log(arguments);
+                 alert(" Can't do because: " + error);
+               // var error_h3 = document.getElementById("error_h3");
+                //serror_h3.style.display = "block";
+            }
+        })
+    }
+
+</script>
+{% endblock %}

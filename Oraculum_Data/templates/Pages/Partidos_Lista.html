@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Partidos</title>
+{% endblock %}
+
+{% block body %}
+
+<div id="main_div" class="container">
+    <h1>Partidos</h1>
+    <h3 id="error_h3" align="center" style="display:none;color:#F0BCBC">Falha ao consultar os dados  </h3>
+</div>
+<script>
+    function populate(data){
+        for(var i = 0;i < data['dados'].length;i++){
+            var div = document.createElement("div");
+            div.id = data['dados'][i].PARTIDO_ID;
+            div.class = "container";
+            var img = document.createElement("img");
+            img.src = data['dados'][i].PARTIDO_URL_LOGO;
+            img.alt = "NOT FOUND";
+            img.style = "float:left; margin-right:5%;";
+            var partido_nome = document.createElement("h3");
+            partido_nome.textContent = data['dados'][i].PARTIDO_NOME;
+            var lider = document.createElement("p");
+            lider.textContent = "Líder: " + data['dados'][i].PARTIDO_NOME_LIDER;
+            var a = document.createElement("a");
+            var see_data = document.createElement("button");
+            see_data.textContent = "Ver dados";
+            see_data.setAttribute("class", "btn btn-primary");
+            a.href = "/Oraculum_Data/partidos/dados/"+data['dados'][i].PARTIDO_ID;
+            var hr = document.createElement("hr");
+            a.appendChild(see_data);
+            div.appendChild(img);
+            div.appendChild(partido_nome);
+            div.appendChild(lider);
+            div.appendChild(a);
+            main_div.appendChild(div);
+            main_div.append(hr);
+        }
+    }
+
+    function get(){
+        $.ajax({
+            async: false,
+            method: "GET",
+            url: "http://127.0.0.1:8000/Oraculum_Data/api/getpartidos/",
+            headers: {
+                accept:"application/json"
+            },
+            success: function(_data){
+                var data = _data;
+                populate(data);
+            },
+            error: function(data){
+                var error_h3 = document.getElementById("error_h3");
+                error_h3.style.display = "block";
+            }
+        })
+    }
+    window.onload = function(){
+        get();
+    }
+
+</script>
+{% endblock %}

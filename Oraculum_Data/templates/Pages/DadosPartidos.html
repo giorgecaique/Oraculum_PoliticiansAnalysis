@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Despesas</title>
+{% endblock %}
+
+{% block body %}
+
+<div class="container">
+    <h3>Dados</h3>
+    <h3 id="error_h3" align="center" style="display:none;color:#F0BCBC">Falha ao consultar os dados  </h3>
+    <img id="url_logo" style="margin-bottom:3%;margin-top:3%;float:right"/>
+    <p id="nome_partido"></p>
+    <p id="nome_lider" ></p>
+    <p id="total_membros"></p>
+    <p id="total_posse"></p>
+    <p id="uf_lider"></p>
+    <p id="uri"></p>
+    <p id="url_facebook"></p>
+    <p id="url_site"></p>
+</div>
+<script>
+    var partido = {{ partido }}
+
+    var nome_partido = document.getElementById('nome_partido');
+    var nome_lider = document.getElementById('nome_lider');
+    var total_membros = document.getElementById('total_membros');
+    var total_posse = document.getElementById('total_posse');
+    var uf_lider = document.getElementById('uf_lider');
+    var uri = document.getElementById('uri');
+    var url_facebook = document.getElementById('url_facebook');
+    var url_logo = document.getElementById('url_logo');
+    var url_site = document.getElementById('url_site');
+
+    window.onload = function(){
+        $.ajax({
+            async: false,
+            method: "GET",
+            url: "http://127.0.0.1:8000/Oraculum_Data/api/getpartidos/?partido=" + partido,
+            success: function(_data){
+                var data = _data;
+ 
+                url_logo.src = data['dados'][0]['PARTIDO_URL_LOGO'];
+                nome_partido.textContent = "Nome: " + data['dados'][0]['PARTIDO_NOME'];
+                nome_lider.textContent = "Nome líder: " + data['dados'][0]['PARTIDO_NOME_LIDER'];
+                total_membros.textContent = "Total de membros: " + data['dados'][0]['PARTIDO_TOTAL_MEMBROS'];
+                total_posse.textContent = "Posse total: " + data['dados'][0]['PARTIDO_TOTAL_POSSE'];
+                uf_lider.textContent = "Estado do líder: " + data['dados'][0]['PARTIDO_UF_LIDER'];
+                uri.textContent = "Uri: " + data['dados'][0]['PARTIDO_URI'];
+                url_facebook.textContent = "Facebook: " + data['dados'][0]['PARTIDO_URL_FACEBOOK'];
+                url_site.textContent = "Site: " + data['dados'][0]['PARTIDO_URL_SITE'];
+                
+            },
+            error: function(data){
+                var error_h3 = document.getElementById("error_h3");
+                error_h3.style.display = "block";
+            }
+        })
+    }
+</script>
+{% endblock %}

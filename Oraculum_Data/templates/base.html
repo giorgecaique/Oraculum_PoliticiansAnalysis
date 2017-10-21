@@ -1,10 +1,14 @@
   <html> 
     <head>  
       <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
-        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>  
+      
+      <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous"> -->
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" 
-            integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" 
-            crossorigin="anonymous">
+      integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" 
+      crossorigin="anonymous">
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+      
       {% block head %}
       <meta charset="utf-8">
       <title>Base</title>
@@ -23,20 +27,35 @@
         </div>
       </div>
       <div>
-         <nav class="navbar navbar-inverse">
+         <nav class="navbar navbar-inverse" >
             <div class="container-fluid">
                 <div class="navbar-header">
                 <a class="navbar-brand" href="/Oraculum_Data">Mr. Oraculum</a>
                 </div>
                 <ul class="nav navbar-nav">
-                <li class="active"><a href="/Oraculum_Data">Home</a></li>
-                <li><a href="/Oraculum_Data/deputados">Deputados</a></li>
-                <li><a href="/Oraculum_Data/partidos">Partidos</a></li>
+                  <li class="active"><a href="/Oraculum_Data">Home</a></li>
+                  <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Deputados
+                    <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                      <li><a href="/Oraculum_Data/deputados_relatorio">Relatório</a></li>
+                      <li><a href="/Oraculum_Data/deputados_lista">Lista</a></li>
+                    </ul>
+                  </li>
+                  <li class="dropdown">
+                      <a class="dropdown-toggle" data-toggle="dropdown" href="#">Partidos
+                      <span class="caret"></span></a>
+                      <ul class="dropdown-menu">
+                        <li><a href="/Oraculum_Data/partidos_relatorio">Relatório</a></li>
+                        <li><a href="/Oraculum_Data/partidos_lista">Lista</a></li>
+                      </ul>
+                    </li>
+                  <li><a href="/Oraculum_Data/partidos">Dados para download</a></li>
                 </ul>
                 <ul id="user_operations"  class="nav navbar-nav navbar-right">
                     {% if user.is_authenticated %}
                     <li id="logout" hidden="hidden"><a href="/Oraculum_Data/logout"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
-                    <li id="alteruser"><a href="/Oraculum_Data/alteruser"><span class="glyphicon glyphicon-log-in"></span> Alterar usuário</a></li>
+                    <li id="alteruser"><a href="/Oraculum_Data/alteruser"><span class="glyphicon glyphicon-user"></span> Alterar dados de usuário</a></li>
                     {% else %}
                     <li id="signup"><a href="/Oraculum_Data/signup"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
                     <li id="login"><a href="/Oraculum_Data/login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
@@ -44,30 +63,9 @@
                 </ul>
             </div>
         </nav> 
-        <script>
-          // var user_authenticated = {% if request.user.is_authenticated %} true {% else %} false {% endif %};
-
-          // if(user_authenticated == true){
-          //   var signup = document.getElementById("signup");
-          //   var login = document.getElementById("login");
-          //   var alter_user = document.createElement("li");
-          //   var user_operations = document.getElementById("user_operations");
-          //   var a = document.createElement("a");
-          //   var span = document.createElement("span");
-          //   span.class = "glyphicon glyphicon-log-out";
-          //   a.href = "/Oraculum_Data/alteruser/";
-          //   alter_user.appendChild(a);
-          //   alter_user.appendChild(span);
-          //   user_operations.appendChild(alter_user);
-          //   signup.style.display = "none";
-          //   login.style.display = "none";
-          // }
-          // else{
-          //   var logout = document.getElementById("logout");
-          //   logout.style.display = "none";
-          // }
-
-        </script>
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
         {% block body %}
          {% endblock %}
       </div>
