@@ -88,7 +88,7 @@ def deputado_dados(request, deputado = None):
 
     total = df_despesas['valorLiquido'].astype(float).sum()
 
-    args = {'user' : user}
+    args = {'dataframe': df_despesas.to_html(classes="table table-striped"), 'valor' : df_despesas['valorLiquido'].astype(float).tolist(), 'data_documento' : json.dumps(df_despesas['dataDocumento'].astype(str).tolist()), 'total': "R$ " + str(total), 'deputado' : deputado, 'user' : user}
 
     return render(request, 'Pages/DadosDeputados.html', args)
 

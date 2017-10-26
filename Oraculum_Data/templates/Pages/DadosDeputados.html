@@ -47,7 +47,6 @@
     var situacao = document.getElementById("situacao");
     var condicao_eleitoral = document.getElementById("condicao_eleitoral");
     var email = document.getElementById("email");
-    // var site = document.getElementById("site");
 
     var chart = new Chart(ctx, {
             type: 'line',
@@ -83,8 +82,6 @@
                 situacao.textContent = "Situação: " + data['dados']['ultimoStatus']['situacao'];
                 condicao_eleitoral.textContent = "Condição eleitoral: " + data['dados']['ultimoStatus']['condicaoEleitoral'];
                 email.textContent = "Email: " + data['dados']['ultimoStatus']['gabinete']['email'];
-                site.href = data['dados']['urlWebsite'];
-                // site.textContent = "Site do deputado";
                 
             },
             error: function(data){
