@@ -10,6 +10,9 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
+import mysql.connector
+import pymysql
+
 user = None
 
 def home(request):
@@ -130,8 +133,9 @@ def api_getdeputados(request):
 
     if request.method == 'GET':
         try:
-            df = pd.read_excel("Oraculum_Data/deputados.xlsx")
-            df['CPF'] = df['CPF'].astype(str)
+            dp = deputado_persistencia()
+            df = dp.get()
+            #df = pd.read_excel("Oraculum_Data/deputados.xlsx")
             df['DEPUTADOS_ID'] = df['DEPUTADOS_ID'].astype(str)
             df['SITE'] = df['SITE'].astype(str)
             df['ESCOLARIDADE'] = df['ESCOLARIDADE'].astype(str)
@@ -148,25 +152,25 @@ def api_getpartidos(request):
         return login(request)
 
     if request.method == 'GET':
-        try:
-            df = pd.read_excel('Oraculum_Data/partidos.xlsx')
-            partido = request.GET.get('partido', None)
-            if partido is not None:
-                df = df[df['PARTIDO_SIGLA'].astype(str) == str(partido)]
-            df['PARTIDO_ID'] = df['PARTIDO_ID'].astype(str)
-            df['PARTIDO_NUMERO_ELEITORAL'] = df['PARTIDO_NUMERO_ELEITORAL'].astype(str)
-            df['PARTIDO_SIGLA'] = df['PARTIDO_SIGLA'].astype(str)
-            df['PARTIDO_TOTAL_MEMBROS'] = df['PARTIDO_TOTAL_MEMBROS'].astype(str)
-            df['PARTIDO_TOTAL_POSSE'] = df['PARTIDO_TOTAL_POSSE'].astype(str)
-            df['PARTIDO_URL_FACEBOOK'] = df['PARTIDO_URL_FACEBOOK'].astype(str)
-            df['PARTIDO_URL_SITE'] = df['PARTIDO_URL_SITE'].astype(str)
-            df['PARTIDO_URL_FOTO_LIDER'] = df['PARTIDO_URL_FOTO_LIDER'].astype(str)
-            df['PARTIDO_NOME_LIDER'] = df['PARTIDO_NOME_LIDER'].astype(str)
-            df['PARTIDO_UF_LIDER'] = df['PARTIDO_UF_LIDER'].astype(str)
-            result = {'dados' : df.T.to_dict().values()}
-            return Response(result)
-        except Exception as ex:
-            return Response({'result' : str(ex.args[0]) + " - " + ex.args[1]})
+        
+        pt = partido_persistencia()
+        df = pt.get()
+        #df = pd.read_excel("Oraculum_Data/partidos.xlsx")
+        partido = request.GET.get('partido', None)
+        if partido is not None:
+            df = df[df['PARTIDO_SIGLA'].astype(str) == str(partido)]
+        df['PARTIDO_ID'] = df['PARTIDO_ID'].astype(str)
+        df['PARTIDO_NUMERO_ELEITORAL'] = df['PARTIDO_NUMERO_ELEITORAL'].astype(str)
+        df['PARTIDO_SIGLA'] = df['PARTIDO_SIGLA'].astype(str)
+        df['PARTIDO_TOTAL_MEMBROS'] = df['PARTIDO_TOTAL_MEMBROS'].astype(str)
+        df['PARTIDO_TOTAL_POSSE'] = df['PARTIDO_TOTAL_POSSE'].astype(str)
+        df['PARTIDO_URL_FACEBOOK'] = df['PARTIDO_URL_FACEBOOK'].astype(str)
+        df['PARTIDO_URL_SITE'] = df['PARTIDO_URL_SITE'].astype(str)
+        df['PARTIDO_URL_FOTO_LIDER'] = df['PARTIDO_URL_FOTO_LIDER'].astype(str)
+        df['PARTIDO_NOME_LIDER'] = df['PARTIDO_NOME_LIDER'].astype(str)
+        df['PARTIDO_UF_LIDER'] = df['PARTIDO_UF_LIDER'].astype(str)
+        result = {'dados' : df.T.to_dict().values()}
+        return Response(result)
 
 @api_view(['GET'])
 def api_alteruser(request):
@@ -215,3 +219,125 @@ def api_login(request):
         return Response(result)
     except Exception as ex:
         return Response({'result': ex.args[0]})
+
+
+
+cnx = pymysql.connect(user='bf20c9d4f7c87d', password='2332efd2',
+                        host='br-cdbr-azure-south-b.cloudapp.net',
+                        database='oraculumdb')
+
+cursor = cnx.cursor()
+
+
+class deputado_persistencia:
+    def __init__(self):
+        self.DEPUTADOS_ID = []
+        self.IMG_DEPUTADO = []
+        self.NOME = []
+        self.DATA_NASCIMENTO = []
+        self.ESCOLARIDADE = []
+        self.MUNICIPIO_NASCIMENTO = []
+        self.SEXO = []
+        self.UF_NASCIMENTO = []
+        self.SIGLA_PARTIDO = []
+        self.SIGLA_UF = []
+        self.SITUACAO = []
+        self.CONDICAO_ELEITORAL = []
+        self.EMAIL = []
+        self.SITE = []
+
+    def get(self):
+        select_deputados = "SELECT DEPUTADOS_ID, IMG_DEPUTADO, NOME, DATA_NASCIMENTO, ESCOLARIDADE, MUNICIPIO_NASCIMENTO, SEXO, UF_NASCIMENTO, SIGLA_PARTIDO, SIGLA_UF, SITUACAO, CONDICAO_ELEITORAL, EMAIL, SITE FROM DEPUTADOS"
+
+        cursor.execute(select_deputados)
+
+        for (_DEPUTADOS_ID, _IMG_DEPUTADO, _NOME, _DATA_NASCIMENTO, _ESCOLARIDADE, _MUNICIPIO_NASCIMENTO, _SEXO, _UF_NASCIMENTO, _SIGLA_PARTIDO, _SIGLA_UF, _SITUACAO, _CONDICAO_ELEITORAL, _EMAIL, _SITE) in cursor:
+            self.DEPUTADOS_ID.append(_DEPUTADOS_ID)
+            self.IMG_DEPUTADO.append(_IMG_DEPUTADO)
+            self.NOME.append(_NOME)
+            self.DATA_NASCIMENTO.append(_DATA_NASCIMENTO)
+            self.ESCOLARIDADE.append(_ESCOLARIDADE)
+            self.MUNICIPIO_NASCIMENTO.append(_MUNICIPIO_NASCIMENTO)
+            self.SEXO.append(_SEXO)
+            self.UF_NASCIMENTO.append(_UF_NASCIMENTO)
+            self.SIGLA_PARTIDO.append(_SIGLA_PARTIDO)
+            self.SIGLA_UF.append(_SIGLA_UF)
+            self.SITUACAO.append(_SITUACAO)
+            self.CONDICAO_ELEITORAL.append(_CONDICAO_ELEITORAL)
+            self.EMAIL.append(_EMAIL)
+            self.SITE.append(_SITE)
+
+        data_deputados = {
+        "DEPUTADOS_ID" : self.DEPUTADOS_ID,
+        "IMG_DEPUTADO" : self.IMG_DEPUTADO,
+        "NOME" : self.NOME,
+        "DATA_NASCIMENTO" : self.DATA_NASCIMENTO,
+        "ESCOLARIDADE" : self.ESCOLARIDADE,
+        "MUNICIPIO_NASCIMENTO" : self.MUNICIPIO_NASCIMENTO,
+        "SEXO" : self.SEXO,
+        "UF_NASCIMENTO" : self.UF_NASCIMENTO,
+        "SIGLA_PARTIDO" : self.SIGLA_PARTIDO,
+        "SIGLA_UF" : self.SIGLA_UF,
+        "SITUACAO" : self.SITUACAO,
+        "CONDICAO_ELEITORAL" : self.CONDICAO_ELEITORAL,
+        "EMAIL" : self.EMAIL,
+        "SITE" : self.SITE
+        }
+
+        deputados_df = pd.DataFrame(data_deputados)
+        return deputados_df
+
+class partido_persistencia:
+    def __init__(self):
+        self.PARTIDO_ID = []
+        self.PARTIDO_SIGLA = []
+        self.PARTIDO_NOME = []
+        self.PARTIDO_URI = []
+        self.PARTIDO_TOTAL_POSSE = []
+        self.PARTIDO_TOTAL_MEMBROS = []
+        self.PARTIDO_NOME_LIDER = []
+        self.PARTIDO_UF_LIDER = []
+        self.PARTIDO_URL_FOTO_LIDER = []
+        self.PARTIDO_NUMERO_ELEITORAL = []
+        self.PARTIDO_URL_LOGO = []
+        self.PARTIDO_URL_SITE = []
+        self.PARTIDO_URL_FACEBOOK = []
+
+    def get(self):
+        select_partidos = "SELECT PARTIDO_ID, PARTIDO_SIGLA, PARTIDO_NOME, PARTIDO_URI, PARTIDO_TOTAL_POSSE, PARTIDO_TOTAL_MEMBROS, PARTIDO_NOME_LIDER, PARTIDO_UF_LIDER, PARTIDO_URL_FOTO_LIDER, PARTIDO_NUMERO_ELEITORAL, PARTIDO_URL_LOGO, PARTIDO_URL_SITE, PARTIDO_URL_FACEBOOK FROM PARTIDOS"
+
+        cursor.execute(select_partidos)
+
+        for (_PARTIDO_ID, _PARTIDO_SIGLA, _PARTIDO_NOME, _PARTIDO_URI, _PARTIDO_TOTAL_POSSE, _PARTIDO_TOTAL_MEMBROS, _PARTIDO_NOME_LIDER, _PARTIDO_UF_LIDER, _PARTIDO_URL_FOTO_LIDER, _PARTIDO_NUMERO_ELEITORAL, _PARTIDO_URL_LOGO, _PARTIDO_URL_SITE, _PARTIDO_URL_FACEBOOK) in cursor:
+            self.PARTIDO_ID.append(_PARTIDO_ID)
+            self.PARTIDO_SIGLA.append(_PARTIDO_SIGLA)
+            self.PARTIDO_NOME.append(_PARTIDO_NOME)
+            self.PARTIDO_URI.append(_PARTIDO_URI)
+            self.PARTIDO_TOTAL_POSSE.append(_PARTIDO_TOTAL_POSSE)
+            self.PARTIDO_TOTAL_MEMBROS.append(_PARTIDO_TOTAL_MEMBROS)
+            self.PARTIDO_NOME_LIDER.append(_PARTIDO_NOME_LIDER)
+            self.PARTIDO_UF_LIDER.append(_PARTIDO_UF_LIDER)
+            self.PARTIDO_URL_FOTO_LIDER.append(_PARTIDO_URL_FOTO_LIDER)
+            self.PARTIDO_NUMERO_ELEITORAL.append(_PARTIDO_NUMERO_ELEITORAL)
+            self.PARTIDO_URL_LOGO.append(_PARTIDO_URL_LOGO)
+            self.PARTIDO_URL_SITE.append(_PARTIDO_URL_SITE)
+            self.PARTIDO_URL_FACEBOOK.append(_PARTIDO_URL_FACEBOOK)
+
+        data_partidos = {
+        "PARTIDO_ID": self.PARTIDO_ID,
+        "PARTIDO_SIGLA": self.PARTIDO_SIGLA,
+        "PARTIDO_NOME": self.PARTIDO_NOME,
+        "PARTIDO_URI": self.PARTIDO_URI,
+        "PARTIDO_TOTAL_POSSE": self.PARTIDO_TOTAL_POSSE,
+        "PARTIDO_TOTAL_MEMBROS": self.PARTIDO_TOTAL_MEMBROS,
+        "PARTIDO_NOME_LIDER": self.PARTIDO_NOME_LIDER,
+        "PARTIDO_UF_LIDER": self.PARTIDO_UF_LIDER,
+        "PARTIDO_URL_FOTO_LIDER": self.PARTIDO_URL_FOTO_LIDER,
+        "PARTIDO_NUMERO_ELEITORAL": self.PARTIDO_NUMERO_ELEITORAL,
+        "PARTIDO_URL_LOGO": self.PARTIDO_URL_LOGO,
+        "PARTIDO_URL_SITE": self.PARTIDO_URL_SITE,
+        "PARTIDO_URL_FACEBOOK": self.PARTIDO_URL_FACEBOOK
+        }
+
+        partidos_df = pd.DataFrame(data_partidos)
+        return partidos_df
