@@ -10,7 +10,6 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
-import mysql.connector
 import pymysql
 
 user = None
@@ -122,6 +121,14 @@ def partidos_lista(request):
 
     args = {'user' : user}
     return render(request, 'Pages/Partidos_Lista.html', args)
+
+def doacao(request):
+    global user
+    if user is None:
+        return login(request)
+
+    args = {'user' : user}
+    return render(request, 'Pages/Doacao.html', args)
 
 # API
 

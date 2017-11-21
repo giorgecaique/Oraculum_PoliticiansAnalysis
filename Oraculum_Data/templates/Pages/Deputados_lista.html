@@ -22,7 +22,7 @@
             var deputado_name = document.createElement("h3");
             deputado_name.textContent = data['dados'][i].NOME;
             var deputado_uf = document.createElement("p");
-            deputado_uf.textContent = "Estado: " + data['dados'][i].SIGLA_UF;
+            deputado_uf.textContent = "Estado: " + data['dados'][i].UF_NASCIMENTO;
             var deputado_partido = document.createElement("p");
             deputado_partido.textContent = "Partido: " + data['dados'][i].SIGLA_PARTIDO;
             var a = document.createElement("a");
@@ -56,8 +56,6 @@
             error: function(_data, req, error){
                 console.log(arguments);
                  alert(" Can't do because: " + error);
-               // var error_h3 = document.getElementById("error_h3");
-                //serror_h3.style.display = "block";
             }
         })
     }

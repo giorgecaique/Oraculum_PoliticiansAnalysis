@@ -17,6 +17,7 @@ urlpatterns = [
     url(r'^api/deleteuser/$', views.api_deleteuser),
     url(r'^api/getdeputados/$', views.api_getdeputados),
     url(r'^api/getpartidos/$', views.api_getpartidos),
+    url(r'^doacao/$', views.doacao),
     url(r'^deputados/dados/(?P<deputado>[0-9]+)/$', views.deputado_dados),
     url(r'^partidos/dados/(?P<partido>[0-9]+)/$', views.partido_dados),
 ]
