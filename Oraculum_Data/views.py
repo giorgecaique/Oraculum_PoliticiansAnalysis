@@ -88,9 +88,7 @@ def deputado_dados(request, deputado = None):
 
     df_despesas = pd.DataFrame(response['dados'])
 
-    total = df_despesas['valorLiquido'].astype(float).sum()
-
-    args = {'dataframe': df_despesas.to_html(classes="table table-striped"), 'valor' : df_despesas['valorLiquido'].astype(float).tolist(), 'data_documento' : json.dumps(df_despesas['dataDocumento'].astype(str).tolist()), 'total': "R$ " + str(total), 'deputado' : deputado, 'user' : user}
+    args = {'dataframe': df_despesas.to_html(classes="table table-striped"), 'deputado' : deputado, 'user' : user}
 
     return render(request, 'Pages/DadosDeputados.html', args)
 
@@ -139,18 +137,15 @@ def api_getdeputados(request):
         return login(request)
 
     if request.method == 'GET':
-        try:
-            dp = deputado_persistencia()
-            df = dp.get()
-            #df = pd.read_excel("Oraculum_Data/deputados.xlsx")
-            df['DEPUTADOS_ID'] = df['DEPUTADOS_ID'].astype(str)
-            df['SITE'] = df['SITE'].astype(str)
-            df['ESCOLARIDADE'] = df['ESCOLARIDADE'].astype(str)
-            df['UF_NASCIMENTO'] = df['UF_NASCIMENTO'].astype(str)
-            result = {'dados' : df.T.to_dict().values()}
-            return Response(result)
-        except Exception as ex:
-            return Response({'result' : ex.args[0]})
+        #dp = deputado_persistencia()
+        #df = dp.get()
+        df = pd.read_excel("Oraculum_Data/deputados.xlsx")
+        df['DEPUTADOS_ID'] = df['DEPUTADOS_ID'].astype(str)
+        df['SITE'] = df['SITE'].astype(str)
+        df['ESCOLARIDADE'] = df['ESCOLARIDADE'].astype(str)
+        df['UF_NASCIMENTO'] = df['UF_NASCIMENTO'].astype(str)
+        result = {'dados' : df.T.to_dict().values()}
+        return Response(result)
 
 @api_view(['GET'])
 def api_getpartidos(request):
@@ -160,12 +155,12 @@ def api_getpartidos(request):
 
     if request.method == 'GET':
         
-        pt = partido_persistencia()
-        df = pt.get()
-        #df = pd.read_excel("Oraculum_Data/partidos.xlsx")
+        #pt = partido_persistencia()
+        #df = pt.get()
+        df = pd.read_excel("Oraculum_Data/partidos.xlsx")
         partido = request.GET.get('partido', None)
         if partido is not None:
-            df = df[df['PARTIDO_SIGLA'].astype(str) == str(partido)]
+            df = df[df['PARTIDO_ID'].astype(str) == str(partido)]
         df['PARTIDO_ID'] = df['PARTIDO_ID'].astype(str)
         df['PARTIDO_NUMERO_ELEITORAL'] = df['PARTIDO_NUMERO_ELEITORAL'].astype(str)
         df['PARTIDO_SIGLA'] = df['PARTIDO_SIGLA'].astype(str)
@@ -176,6 +171,27 @@ def api_getpartidos(request):
         df['PARTIDO_URL_FOTO_LIDER'] = df['PARTIDO_URL_FOTO_LIDER'].astype(str)
         df['PARTIDO_NOME_LIDER'] = df['PARTIDO_NOME_LIDER'].astype(str)
         df['PARTIDO_UF_LIDER'] = df['PARTIDO_UF_LIDER'].astype(str)
+        result = {'dados' : df.T.to_dict().values()}
+        return Response(result)
+
+@api_view(['GET'])
+def api_getproposicoes(request):
+    global user
+    if user is None:
+        return login(request)
+
+    if request.method == 'GET':
+        #p = proposicoes_persistencia()
+        #df = p.get()
+        df = pd.read_excel("Oraculum_Data/proposicoes.xlsx")
+        autor = request.GET.get('autor', None)
+        if autor is not None:
+            df = df[df['ID_AUTOR'].astype(str) == str(autor)]
+        
+        df['PROPOSICOES_ID'] = df['PROPOSICOES_ID'].astype(str)
+        df['ANO'] = df['ANO'].astype(str)
+        df['DATA_APRESENTACAO'] = df['DATA_APRESENTACAO'].astype(str)
+        df['ID_AUTOR'] = df['ID_AUTOR'].astype(str)
         result = {'dados' : df.T.to_dict().values()}
         return Response(result)
 
@@ -348,3 +364,46 @@ class partido_persistencia:
 
         partidos_df = pd.DataFrame(data_partidos)
         return partidos_df
+
+class proposicoes_persistencia:
+    def __init__(self):
+        self.PROPOSICOES_ID = []
+        self.ANO = []
+        self.ID_AUTOR = []
+        self.EMENTA = []
+        self.TIPO_AUTOR = []
+        self.URI_AUTORES = []
+        self.DATA_APRESENTACAO = []
+        self.KEYWORDS = []
+        self.DESCRICAO_TIPO = []
+
+    def get(self):
+        select_proposicoes = "SELECT PROPOSICOES_ID, ANO, DATA_APRESENTACAO, DESCRICAO_TIPO, EMENTA, ID_AUTOR, KEYWORDS, TIPO_AUTOR, URI_AUTORES FROM PROPOSICOES"
+
+        cursor.execute(select_proposicoes)
+
+        for (_PROPOSICOES_ID, _ANO, _DATA_APRESENTACAO, _DESCRICAO_TIPO, _EMENTA, _ID_AUTOR, _KEYWORDS, _TIPO_AUTOR, _URI_AUTORES) in cursor:
+            self.PROPOSICOES_ID.append(_PROPOSICOES_ID)
+            self.ANO.append(_ANO)
+            self.ID_AUTOR.append(_DATA_APRESENTACAO)
+            self.EMENTA.append(_DESCRICAO_TIPO)
+            self.TIPO_AUTOR.append(_EMENTA)
+            self.URI_AUTORES.append(_ID_AUTOR)
+            self.DATA_APRESENTACAO.append(_KEYWORDS)
+            self.KEYWORDS.append(_TIPO_AUTOR)
+            self.DESCRICAO_TIPO.append(_URI_AUTORES)
+
+        data_proposicoes = {
+            "PROPOSICOES_ID" : self.PROPOSICOES_ID,
+            "ANO" : self.ANO,
+            "ID_AUTOR" : self.ID_AUTOR,
+            "EMENTA" : self.EMENTA,
+            "TIPO_AUTOR" : self.TIPO_AUTOR,
+            "URI_AUTORES" : self.URI_AUTORES,
+            "DATA_APRESENTACAO" : self.DATA_APRESENTACAO,
+            "KEYWORDS" : self.KEYWORDS,
+            "DESCRICAO_TIPO" : self.DESCRICAO_TIPO
+        }
+
+        proposicoes_df = pd.DataFrame(data_proposicoes)
+        return proposicoes_df

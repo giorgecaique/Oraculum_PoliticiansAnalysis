@@ -25,15 +25,59 @@
     <p id="condicao_eleitoral"></p>
     <p id="email"></p>
     <!-- <a id="site"></a> -->
-    <h3>Despesas</h3>
-    <canvas id="myChart" style="margin-bottom:10%"></canvas>
-</div>
+    
+    <div class='tableauPlaceholder' id='viz1512195211570' style='position: relative'>
+        <noscript>
+            <a href='#'>
+                <img alt='Despesas ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;De&#47;Despesas_9&#47;Despesas&#47;1_rss.png' style='border: none' />
+            </a>
+        </noscript>
+        <object class='tableauViz'  style='display:none;'>
+            <param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> 
+            <param name='embed_code_version' value='3' /> 
+            <param name='site_root' value='' />
+            <param name='name' value='Despesas_9&#47;Despesas' />
+            <param name='tabs' value='no' />
+            <param name='toolbar' value='no' />
+            <param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;De&#47;Despesas_9&#47;Despesas&#47;1.png' /> 
+            <param name='animate_transition' value='yes' />
+            <param name='display_static_image' value='yes' />
+            <param name='display_spinner' value='yes' />
+            <param name='display_overlay' value='yes' />
+            <param name='display_count' value='yes' />
+            <param name='filter' value='publish=yes' />
+            <param name='filter' value='Idecadastro={{deputado|safe}}' />
+        </object>
+    </div>                
+    <script type='text/javascript'>                    var divElement = document.getElementById('viz1512195211570');                    var vizElement = divElement.getElementsByTagName('object')[0];                    vizElement.style.width='1000px';vizElement.style.height='827px';                    var scriptElement = document.createElement('script');                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    vizElement.parentNode.insertBefore(scriptElement, vizElement);                </script>
+
+
+    <div class='tableauPlaceholder' id='viz1512194001521' style='position: relative'>
+        <noscript>
+            <a href='#'>
+            </div>
+            <img alt='Main Panel ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;SC&#47;SCXNHXNH9&#47;1_rss.png' style='border: none' />
+        </a>
+    </noscript>
+    <object class='tableauViz'  style='display:none;'>
+        <param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> 
+        <param name='embed_code_version' value='3' /> 
+        <param name='path' value='shared&#47;SCXNHXNH9' /> 
+        <param name='toolbar' value='yes' />
+        <param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;SC&#47;SCXNHXNH9&#47;1.png' /> 
+        <param name='animate_transition' value='yes' />
+        <param name='display_static_image' value='yes' />
+        <param name='display_spinner' value='yes' />
+        <param name='display_overlay' value='yes' />
+        <param name='display_count' value='yes' />
+        <param name='filter' value='publish=yes' />
+        <param name='filter' value='ID_AUTOR={{deputado|safe}}' />
+    </object>
+</div>                
+<script type='text/javascript'>                    var divElement = document.getElementById('viz1512194001521');                    var vizElement = divElement.getElementsByTagName('object')[0];                    vizElement.style.width='1000px';vizElement.style.height='827px';                    var scriptElement = document.createElement('script');                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    vizElement.parentNode.insertBefore(scriptElement, vizElement);                </script>
 <script>
     var deputado = {{ deputado }}
     
-    var x = {{ data_documento|safe }}
-    var y = {{ valor }}
-    var ctx = document.getElementById("myChart");
 
     var img_deputado = document.getElementById("img_deputado");
     var nome = document.getElementById("nome");
@@ -47,19 +91,6 @@
     var situacao = document.getElementById("situacao");
     var condicao_eleitoral = document.getElementById("condicao_eleitoral");
     var email = document.getElementById("email");
-
-    var chart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: x,
-                datasets: [{
-                    label: 'Despesa ao longo do tempo',
-                    data: y,
-                    backgroundColor:'rgba(0, 0, 0, 0.2)',
-                    borderColor:'rgba(50, 50, 50, 1)'
-                }]
-            }
-        });
 
     window.onload = function(){
         $.ajax({
