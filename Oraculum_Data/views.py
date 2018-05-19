@@ -75,7 +75,7 @@ def deputado_dados(request, deputado = None):
     if deputado is None:
         return render(request, 'Pages/DadosDeputados.html')
 
-    url = "https://dadosabertos.camara.leg.br/api/v2/deputados/" + deputado + "/despesas?itens=100&ordem=DESC&ordenarPor=numAno"
+    url = "https://dadosabertos.camara.leg.br/api/v2/deputados/" + deputado + "/despesas?itens=100"
    
     querystring = {"ordem":"DESC","ordenarPor":"numAno"}
 
@@ -141,8 +141,8 @@ def api_getdeputados(request):
     if request.method == 'GET':
         try:
             dp = deputado_persistencia()
-            df = dp.get()
-            #df = pd.read_excel("Oraculum_Data/deputados.xlsx")
+            #df = dp.get()
+            df = pd.read_excel("Oraculum_Data/deputados.xlsx")
             df['DEPUTADOS_ID'] = df['DEPUTADOS_ID'].astype(str)
             df['SITE'] = df['SITE'].astype(str)
             df['ESCOLARIDADE'] = df['ESCOLARIDADE'].astype(str)
@@ -161,8 +161,8 @@ def api_getpartidos(request):
     if request.method == 'GET':
         
         pt = partido_persistencia()
-        df = pt.get()
-        #df = pd.read_excel("Oraculum_Data/partidos.xlsx")
+        #df = pt.get()
+        df = pd.read_excel("Oraculum_Data/partidos.xlsx")
         partido = request.GET.get('partido', None)
         if partido is not None:
             df = df[df['PARTIDO_SIGLA'].astype(str) == str(partido)]
@@ -229,11 +229,11 @@ def api_login(request):
 
 
 
-cnx = pymysql.connect(user='bf20c9d4f7c87d', password='2332efd2',
-                        host='br-cdbr-azure-south-b.cloudapp.net',
-                        database='oraculumdb')
+#cnx = pymysql.connect(user='bf20c9d4f7c87d', password='2332efd2',
+#                        host='br-cdbr-azure-south-b.cloudapp.net',
+#                       database='oraculumdb')
 
-cursor = cnx.cursor()
+#cursor = cnx.cursor()
 
 
 class deputado_persistencia:
